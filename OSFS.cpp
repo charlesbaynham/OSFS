@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 
-result getFileInfo(char* filename, uint16_t& filePointer, uint16_t fileSize) {
+result getFileInfo(const char* filename, uint16_t& filePointer, uint16_t& fileSize) {
 
 	// Confirm that the EEPROM is managed by this version of OSFS
 	result r = checkLibVersion();
@@ -27,13 +27,14 @@ result getFileInfo(char* filename, uint16_t& filePointer, uint16_t fileSize) {
 
 	// Loop through checking the file header until 
 	// 	a) we reach a NULL pointer,
-	// 	b) we match our file or 
+	// 	b) we find a deleted file that can be overwritten
 	// 	c) we get an OOL pointer somehow
-	do {
+	while (true) {
 
 		// Load the next header
 		result r = readNBytesChk(workingAddress, sizeof(fileHeader), &workingHeader);
 
+		// Quit if we're out of bounds
 		if (r != result::NO_ERROR)
 			return r;
 
@@ -53,10 +54,17 @@ result getFileInfo(char* filename, uint16_t& filePointer, uint16_t fileSize) {
 			}
 		}
 
-	} while (workingHeader.nextFile != 0);
+		// If there's no next file
+		if (workingHeader.nextFile == 0) {
+			
+			return result::FILE_NOT_FOUND;
+		}
 
-	// If we get this far then we didn't find the file
-	return result::FILE_NOT_FOUND;
+		// Keep going
+		workingAddress = workingHeader.nextFile;
+	}
+
+	return result::UNDEFINED_ERROR;
 }
 
 result newFile(const char* filename, void* data, unsigned int size) {
@@ -187,6 +195,17 @@ result format() {
 
 	// Store this after the FS identifying info
 	return writeNBytesChk(startOfEEPROM + sizeof(FSInfo), sizeof(fileHeader), &dummyHeader);
+}
+
+result getFile(const char* filename, void* buf, int maxBytes) {
+
+	uint16_t add, size;
+	getFileInfo(filename, add, size);
+
+	if (size > maxBytes) 
+		return result::BUFFER_TOO_SMALL;
+
+	return readNBytesChk(add, size, buf);
 }
 
 result writeNBytesChk(uint16_t address, unsigned int num, const void* input) {

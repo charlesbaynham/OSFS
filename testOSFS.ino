@@ -54,6 +54,21 @@ void setup() {
 
   Serial.println((int)r);
 
+  Serial.println(F("Retreiving test2"));
+  uint16_t loc, fsize;
+  r = getFileInfo("test2", loc, fsize);
+  Serial.print((int)r);
+  Serial.print(", ");
+  Serial.print(loc);
+  Serial.print(", ");
+  Serial.println(fsize);
+
+  Serial.println(F("Contents:"));
+
+  uint16_t buf;
+  getFile("test2", &buf, sizeof(buf));
+  Serial.println(buf, HEX);
+
   Serial.println(F("Done"));
 
 

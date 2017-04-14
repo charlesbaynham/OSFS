@@ -66,6 +66,8 @@ enum class result {
 	FILE_NOT_FOUND,
 	INSUFFICIENT_SPACE,
 	UNFORMATTED,
+	BUFFER_TOO_SMALL,
+	UNDEFINED_ERROR
 };
 
 #define OSFS_ID_STR "OSFS"
@@ -84,7 +86,21 @@ enum class result {
  *
  * @return     Error status.
  */
-result getFileInfo(const char* filename, uint16_t& filePointer, uint16_t fileSize);
+result getFileInfo(const char* filename, uint16_t& filePointer, uint16_t& fileSize);
+
+/**
+ * @brief      Reads out the given file into an output buffer
+ *
+ *             The user is responsible for ensuring that the output buffer is
+ *             large enough to hold the whole file.
+ *
+ * @param[in]  filename  The filename
+ * @param      buf       The output buffer
+ * @param[in]  maxBytes  The output buffer size
+ *
+ * @return     Error status. 
+ */
+result getFile(const char* filename, void* buf, int maxBytes);
 
 /**
  * @brief      Store a new file
