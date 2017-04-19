@@ -1,6 +1,6 @@
 /**
- * Over Simplified File System (OSFS) ==================================
- *
+ * # Over Simplified File System (OSFS)
+ * 
  * Provides an extremely basic, low footprint file system for EEPROM access in
  * an AVR microprocessor or otherwise.
  *
@@ -59,6 +59,9 @@ struct FSInfo {
 	uint16_t version;
 };
 
+// Flag meaning
+constexpr int DELBIT = 7;
+
 enum class result {
 	NO_ERROR = 0,
 	WRONG_VERSION,
@@ -66,7 +69,8 @@ enum class result {
 	FILE_NOT_FOUND,
 	INSUFFICIENT_SPACE,
 	UNFORMATTED,
-	BUFFER_TOO_SMALL,
+	BUFFER_WRONG_SIZE,
+	FILE_ALREADY_EXISTS,
 	UNDEFINED_ERROR
 };
 
@@ -91,16 +95,29 @@ result getFileInfo(const char* filename, uint16_t& filePointer, uint16_t& fileSi
 /**
  * @brief      Reads out the given file into an output buffer
  *
- *             The user is responsible for ensuring that the output buffer is
- *             large enough to hold the whole file.
+ *             This function will check that the output variable is of the right
+ *             size to fit the data
  *
  * @param[in]  filename  The filename
- * @param      buf       The output buffer
- * @param[in]  maxBytes  The output buffer size
+ * @param[out] buf       The output buffer
  *
- * @return     Error status. 
+ * @tparam     T         Type of output buffer: autodetected
+ *
+ * @return     Error status.
  */
-result getFile(const char* filename, void* buf, int maxBytes);
+template <typename T>
+inline result getFile(const char* filename, T& buf) {
+	uint16_t add, size;
+	result r = getFileInfo(filename, add, size);
+
+	if (r != result::NO_ERROR)
+		return r;
+
+	if (size != sizeof(buf)) 
+		return result::BUFFER_WRONG_SIZE;
+
+	return readNBytesChk(add, size, &buf);
+}
 
 /**
  * @brief      Store a new file
@@ -109,6 +126,8 @@ result getFile(const char* filename, void* buf, int maxBytes);
  *             filename. If sufficient continuous space is found, store <size>
  *             bytes starting at <data> in the EEPROM.
  *
+ *             It is recommended to use the other form of this function.
+ *
  * @param      filename  The filename. Should be 11 chars long. More chars will
  *                       be ignored, less chars will be padded to 11.
  * @param      data      Pointer to the data to be stored.
@@ -116,7 +135,27 @@ result getFile(const char* filename, void* buf, int maxBytes);
  *
  * @return     Error status.
  */
-result newFile(const char* filename, void* data, unsigned int size);
+result newFile(const char* filename, void* data, unsigned int size, bool overwrite = false);
+
+/**
+ * @brief      Store a new file
+ *
+ *             Create and store a new file in the EEPROM using the given
+ *             filename. If sufficient continuous space is found, store the
+ *             variable <buf> in the EEPROM.
+ *
+ * @param      filename  The filename. Should be 11 chars long. More chars will
+ *                       be ignored, less chars will be padded to 11.
+ * @param[in]  buf       The variable to be stored
+ *
+ * @tparam     T         Type to be stored (autodetected)
+ *
+ * @return     Error status.
+ */
+template <typename T>
+inline result newFile(const char* filename, T& buf, bool overwrite = false) {
+	return newFile(filename, &buf, sizeof(buf), overwrite);
+}
 
 /**
  * @brief      Deletes the file given
@@ -191,5 +230,5 @@ result readNBytesChk(uint16_t address, unsigned int num, void* input);
 void padFilename(const char * filenameIn, char * filenameOut);
 
 inline bool isDeletedFile(fileHeader workingHeader) {
-	return workingHeader.flags && 0b10000000;
+	return workingHeader.flags && 1<<DELBIT;
 }

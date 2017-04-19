@@ -19,55 +19,78 @@ void writeNBytes(uint16_t address, unsigned int num, const void* input) {
 
 void setup() {
   
+  result r;
+
   Serial.begin(57600);
 
   Serial.println(F("Hello world!"));
 
-  Serial.println(F("Formatting rom. Result: "));
-  result r = format();
-  Serial.println((int)r);
+  Serial.println(F("Storing complex struct"));
 
-  Serial.println(F("Storing file result:"));
+  struct complexType {
+  	int a = 1;
+  	char b = 'h';
+  	uint32_t c = 0x98761234;
+  };
 
-  uint16_t testData = 0xABCD;
-
-  r = newFile("test", &testData, sizeof(testData));
-
-  Serial.println((int)r);
-
-  uint16_t testData2 = 0xDCBA;
-
-  delay(300);
-  Serial.println(F("Next"));
-  delay(100);
-
-  r = newFile("test2", &testData2, sizeof(testData2));
+  complexType testC;
+  testC.a = 624;
+  r = newFile("testC", testC, false);
 
   Serial.println((int)r);
-
-  delay(300);
-  Serial.println(F("Re next"));
-  delay(100);
-
-  uint32_t testData3 = 0xabcd1234;
-  r = newFile("test3", &testData3, sizeof(testData3));
-
-  Serial.println((int)r);
-
-  Serial.println(F("Retreiving test2"));
-  uint16_t loc, fsize;
-  r = getFileInfo("test2", loc, fsize);
-  Serial.print((int)r);
-  Serial.print(", ");
-  Serial.print(loc);
-  Serial.print(", ");
-  Serial.println(fsize);
-
-  Serial.println(F("Contents:"));
 
   uint16_t buf;
-  getFile("test2", &buf, sizeof(buf));
-  Serial.println(buf, HEX);
+
+  // Serial.println(F("Retreiving test"));  
+
+  // r = getFile("test", buf);
+  // Serial.println((int)r);
+  // Serial.println(buf, HEX);
+
+  // Serial.println(F("Retreiving test1"));  
+
+  // r = getFile("test1", buf);
+  // Serial.println((int)r);
+  // Serial.println(buf, HEX);
+
+  // Serial.println(F("Retreiving test2"));  
+
+  // r = getFile("test2", buf);
+  // Serial.println((int)r);
+  // Serial.println(buf, HEX);
+
+  // Serial.println(F("Retreiving test3"));  
+
+  // r = getFile("test3", buf);
+  // Serial.println((int)r);
+  // Serial.println(buf, HEX);
+
+  // Serial.println(F("Retreiving test3 big"));  
+
+  // uint32_t buf2;
+  // r = getFile("test3", buf2);
+  // Serial.println((int)r);
+  // Serial.println(buf2, HEX);
+
+  // Serial.println(F("Retreiving testC"));  
+
+  complexType bufC;
+  // r = getFile("testC", bufC);
+  // Serial.println((int)r);
+  // Serial.println(bufC.a);
+  // Serial.println(bufC.b);
+  // Serial.println(bufC.c, HEX);
+
+  // Serial.println(F("Deleting testC"));
+  // Serial.println((int)deleteFile("testC"));
+  
+  Serial.println(F("Retreiving testC"));  
+
+  r = getFile("testC", bufC);
+  Serial.println((int)r);
+  Serial.println(bufC.a);
+  Serial.println(bufC.b);
+  Serial.println(bufC.c, HEX);
 
   Serial.println(F("Done"));
 

@@ -67,7 +67,13 @@ result getFileInfo(const char* filename, uint16_t& filePointer, uint16_t& fileSi
 	return result::UNDEFINED_ERROR;
 }
 
-result newFile(const char* filename, void* data, unsigned int size) {
+result newFile(const char* filename, void* data, unsigned int size, bool overwrite) {
+
+	// Header for new file
+	fileHeader newHeader;
+	
+	// Store padded filename in newHeader
+	padFilename(filename, newHeader.fileID);
 
 	// Confirm that the EEPROM is managed by this version of OSFS
 	result r = checkLibVersion();
@@ -85,7 +91,8 @@ result newFile(const char* filename, void* data, unsigned int size) {
 	// Loop through checking the file header until 
 	// 	a) we reach a NULL pointer,
 	// 	b) we find a deleted file that can be overwritten
-	// 	c) we get an OOL pointer somehow
+	// 	c) we find a file with the same name as this one (overwrite it if same size and overwrite == true)
+	// 	d) we get an OOL pointer somehow
 	while (true) {
 
 		// Load the next header
@@ -94,6 +101,17 @@ result newFile(const char* filename, void* data, unsigned int size) {
 		// Quit if we're out of bounds
 		if (r != result::NO_ERROR)
 			return r;
+
+		// Quit if it has the same name and isn't deleted
+		if (!isDeletedFile(workingHeader) && 0 == strncmp(workingHeader.fileID, newHeader.fileID, 11)) {
+			// Error if different sizes or overwrite == false
+			if (size != workingHeader.fileSize || overwrite == false)
+				return result::FILE_ALREADY_EXISTS;
+
+			// else overwrite it
+			writeAddress = workingAddress;
+			break;
+		}
 
 		// If there's no next file, calculate the start of the spare space and break the loop
 		if (workingHeader.nextFile == 0) {
@@ -130,9 +148,7 @@ result newFile(const char* filename, void* data, unsigned int size) {
 	// We have a copy of the previous header in workingHeader
 	//
 	// First, constuct a header for this file:
-	fileHeader newHeader;
-
-	padFilename(filename, newHeader.fileID);
+	
 	newHeader.fileSize = size;
 	if (workingHeader.nextFile == 0)
 		newHeader.nextFile = 0;
@@ -147,6 +163,59 @@ result newFile(const char* filename, void* data, unsigned int size) {
 	writeNBytesChk(workingAddress, sizeof(fileHeader), &workingHeader);
 	writeNBytesChk(writeAddress, sizeof(fileHeader), &newHeader);
 	return writeNBytesChk(writeAddress + sizeof(fileHeader), size, data);
+}
+
+result deleteFile(const char * filename) {
+	
+	// Confirm that the EEPROM is managed by this version of OSFS
+	result r = checkLibVersion();
+
+	if (r != result::NO_ERROR)
+		return r;
+
+	// Store padded filename in filenamePadded
+	char filenamePadded[11];
+	padFilename(filename, filenamePadded);
+
+	// Get the first header
+	fileHeader workingHeader;
+	uint16_t workingAddress = startOfEEPROM + sizeof(FSInfo);
+
+	// Loop through checking the file header until 
+	// 	a) we reach a NULL pointer,
+	// 	b) we find our file and it's not deleted
+	// 	c) we get an OOL pointer somehow
+	while (true) {
+
+		// Load the next header
+		result r = readNBytesChk(workingAddress, sizeof(fileHeader), &workingHeader);
+
+		// Quit if we're out of bounds
+		if (r != result::NO_ERROR)
+			return r;
+
+		// Delete the file if it has the same name and isn't already deleted
+		if (!isDeletedFile(workingHeader) && 0 == strncmp(workingHeader.fileID, filenamePadded, 11)) {
+			
+			workingHeader.flags = workingHeader.flags | 1<<DELBIT;
+			r = writeNBytesChk(workingAddress, sizeof(fileHeader), &workingHeader);
+			
+			if (r != result::NO_ERROR)
+				return r;
+
+			return result::NO_ERROR;
+		}
+
+		// Quit if we get a NULL pointer
+		if (workingHeader.nextFile == 0)
+			return result::FILE_NOT_FOUND;
+
+		// Next file
+		workingAddress = workingHeader.nextFile;
+	}
+
+	// We will never get here
+	return result::UNDEFINED_ERROR;
 }
 
 result checkLibVersion(uint16_t& ver) {
@@ -195,17 +264,6 @@ result format() {
 
 	// Store this after the FS identifying info
 	return writeNBytesChk(startOfEEPROM + sizeof(FSInfo), sizeof(fileHeader), &dummyHeader);
-}
-
-result getFile(const char* filename, void* buf, int maxBytes) {
-
-	uint16_t add, size;
-	getFileInfo(filename, add, size);
-
-	if (size > maxBytes) 
-		return result::BUFFER_TOO_SMALL;
-
-	return readNBytesChk(add, size, buf);
 }
 
 result writeNBytesChk(uint16_t address, unsigned int num, const void* input) {
