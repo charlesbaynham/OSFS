@@ -1,0 +1,35 @@
+#######################################
+# Syntax Coloring Map For OSFS
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+OSFS	KEYWORD1
+fileHeader	KEYWORD1
+FSInfo	KEYWORD1
+result	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+getFileInfo	KEYWORD2
+getFile	KEYWORD2
+newFile	KEYWORD2
+deleteFile	KEYWORD2
+format	KEYWORD2
+checkLibVersion	KEYWORD2
+writeNBytesChk	KEYWORD2
+readNBytesChk	KEYWORD2
+padFilename	KEYWORD2
+isDeletedFile	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
