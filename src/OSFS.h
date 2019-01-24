@@ -46,8 +46,8 @@ namespace OSFS {
 	// User provided details about the EEPROM
 	extern uint16_t startOfEEPROM;
 	extern uint16_t endOfEEPROM;
-	extern void readNBytes(uint16_t address, unsigned int num, void* output);
-	extern void writeNBytes(uint16_t address, unsigned int num, const void* input);
+	extern void readNBytes(uint16_t address, unsigned int num, byte* output);
+	extern void writeNBytes(uint16_t address, unsigned int num, const byte* input);
 
 	struct fileHeader {
 		char fileID[11]; // Note that this string is not null terminated

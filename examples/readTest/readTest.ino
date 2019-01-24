@@ -17,15 +17,15 @@
 uint16_t OSFS::startOfEEPROM = 1;
 uint16_t OSFS::endOfEEPROM = 1024;
 
-void OSFS::readNBytes(uint16_t address, unsigned int num, void* output) {
+void OSFS::readNBytes(uint16_t address, unsigned int num, byte* output) {
 	for (int i = address; i < address + num; i++) {
-		*((byte*)output) = EEPROM.read(i);
+		*output = EEPROM.read(i);
 		output++;
 	}
 }
-void OSFS::writeNBytes(uint16_t address, unsigned int num, const void* input) {
+void OSFS::writeNBytes(uint16_t address, unsigned int num, const byte* input) {
 	for (int i = address; i < address + num; i++) {
-		EEPROM.update(i, *((byte*)input));
+		EEPROM.update(i, *input);
 		input++;
 	}
 }
