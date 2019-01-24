@@ -77,7 +77,7 @@ namespace OSFS {
 	};
 
 	#define OSFS_ID_STR "OSFS"
-	#define OSFS_VER 1
+	#define OSFS_VER 2
 
 	/**
 	 * @brief      Gets a pointer to the given file
