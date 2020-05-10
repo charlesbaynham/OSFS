@@ -32,7 +32,7 @@ void OSFS::writeNBytes(uint16_t address, unsigned int num, const byte* input) {
 
 unittest(test_nothing)
 {
-    return 0
+    assertTrue(true);
 }
 
 
