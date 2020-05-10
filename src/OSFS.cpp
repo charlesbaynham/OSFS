@@ -272,7 +272,7 @@ namespace OSFS {
 		if (address < startOfEEPROM || address > endOfEEPROM) return result::UNCAUGHT_OOR;
 		if (address + num < startOfEEPROM || address + num > endOfEEPROM) return result::UNCAUGHT_OOR;
 
-		writeNBytes(address, num, input);
+		writeNBytes(address, num, (byte*)input);
 
 		return result::NO_ERROR;
 	}
@@ -282,7 +282,7 @@ namespace OSFS {
 		if (address < startOfEEPROM || address > endOfEEPROM) return result::UNCAUGHT_OOR;
 		if (address + num < startOfEEPROM || address + num > endOfEEPROM) return result::UNCAUGHT_OOR;
 
-		readNBytes(address, num, output);
+		readNBytes(address, num, (byte*)output);
 
 		return result::NO_ERROR;
 	}
@@ -293,7 +293,9 @@ namespace OSFS {
 		bool ended = false;
 		for (int i = 0; i<11; i++) {
 			
-			char inChar = *(filenameIn+i);
+			char inChar;
+			if (!ended)
+				inChar = *(filenameIn+i);
 
 			if (inChar == '\0' || ended)
 			{
