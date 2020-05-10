@@ -134,6 +134,10 @@ namespace OSFS {
 	 *                       be ignored, less chars will be padded to 11.
 	 * @param      data      Pointer to the data to be stored.
 	 * @param      size      Number of bytes to store, starting at `data`.
+	 * @param      overwrite Overwrite the named file is it is present. Note that 
+	                         if you attempt to overwrite an existing file with a larger one
+	                         but there is insufficient space, the original file will still
+	                         be deleted. 
 	 *
 	 * @return     Error status.
 	 */
@@ -149,6 +153,10 @@ namespace OSFS {
 	 * @param      filename  The filename. Should be 11 chars long. More chars will
 	 *                       be ignored, less chars will be padded to 11.
 	 * @param[in]  buf       The variable to be stored
+	 * @param      overwrite Overwrite the named file is it is present. Note that 
+	                         if you attempt to overwrite an existing file with a larger one
+	                         but there is insufficient space, the original file will still
+	                         be deleted. 
 	 *
 	 * @tparam     T         Type to be stored (autodetected)
 	 *
