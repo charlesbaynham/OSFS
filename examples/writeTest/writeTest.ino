@@ -23,7 +23,7 @@ uint16_t OSFS::endOfEEPROM = 1024;
 
 // 3) How do I read from the medium?
 void OSFS::readNBytes(uint16_t address, unsigned int num, byte* output) {
-	for (int i = address; i < address + num; i++) {
+	for (uint16_t i = address; i < address + num; i++) {
 		*output = EEPROM.read(i);
 		output++;
 	}
@@ -31,7 +31,7 @@ void OSFS::readNBytes(uint16_t address, unsigned int num, byte* output) {
 
 // 4) How to I write to the medium?
 void OSFS::writeNBytes(uint16_t address, unsigned int num, const byte* input) {
-	for (int i = address; i < address + num; i++) {
+	for (uint16_t i = address; i < address + num; i++) {
 		EEPROM.update(i, *input);
 		input++;
 	}
