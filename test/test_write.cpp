@@ -19,6 +19,30 @@ unittest(test_format)
     OSFS::format();
 }
 
+unittest(test_write_int)
+{
+    OSFS::format();
+    int testInt = 123;
+    OSFS::newFile("testInt", testInt);
+}
+
+unittest(test_recall_int)
+{
+    OSFS::format();
+    int test_write = 123;
+    OSFS::newFile("testInt", test_write);
+
+    uint16_t filePtr, fileSize;
+    auto r = OSFS::getFileInfo("testInt", filePtr, fileSize);
+
+    assertEqual(OSFS::result::NO_ERROR, r);
+
+    int test_read;
+
+    r = OSFS::getFile("testInt", test_read);
+    assertEqual(test_write, test_read);
+}
+
 
 unittest_main()
 
