@@ -80,13 +80,13 @@ unittest(test_overwrite_size_change)
 
 	struct obj {
 		char name[5];
-	}
+	};
 	struct obj_smaller {
 		char name[2];
-	}
+	};
 	struct obj_bigger {
 		char name[10];
-	}
+	};
 
 	int testInt = 123;
 
@@ -102,7 +102,7 @@ unittest(test_overwrite_size_change)
 
 	obj o_read;
 
-	auto r = getFileInfo("test", filePointer, fileSize);
+	auto r = OSFS::getFileInfo("test", filePointer, fileSize);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 
 
@@ -112,16 +112,16 @@ unittest(test_overwrite_size_change)
 	obj_smaller o_small;
 	obj_bigger o_big;
 
-	r = OSFS::newFile("test", obj_smaller, true);
+	r = OSFS::newFile("test", o_small, true);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 
-	r = getFileInfo("test", filePointer_smaller, fileSize_smaller);
+	r = OSFS::getFileInfo("test", filePointer_smaller, fileSize_smaller);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 
-	r = OSFS::newFile("test", obj_bigger, true);
+	r = OSFS::newFile("test", o_big, true);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 
-	r = getFileInfo("test", filePointer_bigger, fileSize_bigger);
+	r = OSFS::getFileInfo("test", filePointer_bigger, fileSize_bigger);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 
 	assertEqual(fileSize, sizeof(obj));
