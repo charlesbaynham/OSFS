@@ -5,6 +5,9 @@
 
 // Unit tests for writing files
 
+unittest_setup() {
+	clear_storage();
+}
 
 unittest(test_nothing)
 {
