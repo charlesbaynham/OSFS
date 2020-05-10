@@ -46,7 +46,7 @@ unittest(test_recall_int)
 
 unittest(test_wipe_worked)
 {
-	auto r = OSFS::format();
+	auto r = OSFS::checkLibVersion();
 
 	assertEqual(int(r), int(OSFS::result::UNFORMATTED));
 }
@@ -130,8 +130,6 @@ unittest(test_overwrite_size_change)
 
 	assertEqual(filePointer, filePointer_smaller);
 	assertNotEqual(filePointer, filePointer_bigger);
-
-
 }
 
 
