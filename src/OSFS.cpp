@@ -86,15 +86,27 @@ namespace OSFS {
 		// It is! Now get the first file header
 		int sizeRequired = sizeof(fileHeader) + size;
 
+		// If we're overwriting an existing file, delete the existing file (if it
+		// exists)
+		if (overwrite) {
+			deleteFile(filename);
+		} else {
+			// If we're not, check if it already exists
+			uint16_t checkFilePointer, checkFileSize;
+			results r_check = getFileInfo(filename, checkFilePointer, checkFileSize)
+
+			if (r_check != result::FILE_NOT_FOUND)
+				return result::FILE_ALREADY_EXISTS;
+		}
+
 		fileHeader workingHeader;
 		uint16_t workingAddress = startOfEEPROM + sizeof(FSInfo);
 		uint16_t writeAddress;
 
 		// Loop through checking the file header until 
-		// 	a) we reach a NULL pointer,
+		// 	a) we reach a NULL pointer (i.e. the end of the current files)
 		// 	b) we find a deleted file that can be overwritten
-		// 	c) we find a file with the same name as this one (overwrite it if same size and overwrite == true)
-		// 	d) we get an OOL pointer somehow
+		// 	c) we run out of space
 		while (true) {
 
 			// Load the next header
@@ -104,31 +116,11 @@ namespace OSFS {
 			if (r != result::NO_ERROR)
 				return r;
 
-			// Quit if it has the same name and isn't deleted
-			if (!isDeletedFile(workingHeader) && 0 == strncmp(workingHeader.fileID, newHeader.fileID, 11)) {
-				// Error if overwrite == false
-				if (!overwrite)
-				{
-					return result::FILE_ALREADY_EXISTS;
-				}
-				else if (size != workingHeader.fileSize)
-				{
-					//even though overwrite is true, this isn't the same filesize.  Therefore... delete it and keep going.
-					deleteFiledt(filename);
-				}
-				else
-				{
-
-					// Overwriting is possible: user asked for it, and the sizes are the same
-					writeAddress = workingAddress;
-					break;
-
-				}
-			}
-
+			
 			// If there's no next file, calculate the start of the spare space and break the loop
-			if (workingHeader.nextFile == 0) {
-				
+			// Note that we might find a file header with fileSize == 0 if there are no files on 
+			// the filesystem at all. In this case, overwrite this "dummy header". 
+			if (workingHeader.nextFile == 0) {				
 				if (workingHeader.fileSize != 0)
 					writeAddress = workingAddress + sizeof(workingHeader) + workingHeader.fileSize;
 				else
@@ -141,11 +133,14 @@ namespace OSFS {
 			if (isDeletedFile(workingHeader)) {
 				// It is. Is the space large enough for us?
 				int deletedSpace = workingHeader.nextFile - workingAddress;
-				if (deletedSpace >= sizeRequired) 
+				if (deletedSpace >= sizeRequired) {
+					// Save the location for writing and quit the loop
 					writeAddress = workingAddress;
+					break;
+				}
 			}
 
-			// Nope, next
+			// None of the conditions match: continue the search
 			workingAddress = workingHeader.nextFile;
 		}
 
