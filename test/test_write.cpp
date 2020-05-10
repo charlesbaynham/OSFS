@@ -35,7 +35,7 @@ unittest(test_recall_int)
     uint16_t filePtr, fileSize;
     auto r = OSFS::getFileInfo("testInt", filePtr, fileSize);
 
-    assertEqual(OSFS::result::NO_ERROR, r);
+    assertEqual((int)OSFS::result::NO_ERROR, (int)r);
 
     int test_read;
 
