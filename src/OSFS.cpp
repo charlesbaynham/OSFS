@@ -293,7 +293,9 @@ namespace OSFS {
 		bool ended = false;
 		for (int i = 0; i<11; i++) {
 			
-			char inChar = *(filenameIn+i);
+			char inChar;
+			if (!ended)
+				inChar = *(filenameIn+i);
 
 			if (inChar == '\0' || ended)
 			{
