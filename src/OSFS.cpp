@@ -89,14 +89,19 @@ namespace OSFS {
 		// If we're overwriting an existing file, delete the existing file (if it
 		// exists)
 		if (overwrite) {
-			deleteFile(filename);
+			result r_delete = deleteFile(filename);
+			if (r_delete != result::NO_ERROR && r_delete != result::FILE_NOT_FOUND)
+				return r_delete;
 		} else {
 			// If we're not, check if it already exists
 			uint16_t checkFilePointer, checkFileSize;
 			result r_check = getFileInfo(filename, checkFilePointer, checkFileSize);
 
-			if (r_check != result::FILE_NOT_FOUND)
+			if (r_check == result::NO_ERROR)
 				return result::FILE_ALREADY_EXISTS;
+			if (r_check != result::FILE_NOT_FOUND)
+				return r_check;
+			// r_check == FILE_NOT_FOUND
 		}
 
 		fileHeader workingHeader;
