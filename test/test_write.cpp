@@ -12,36 +12,103 @@ unittest_setup() {
 
 unittest(test_nothing)
 {
-    assertTrue(true);
+	assertTrue(true);
 }
 
 unittest(test_format)
 {
-    OSFS::format();
+	OSFS::format();
 }
 
 unittest(test_write_int)
 {
-    OSFS::format();
-    int testInt = 123;
-    OSFS::newFile("testInt", testInt);
+	OSFS::format();
+	int testInt = 123;
+	OSFS::newFile("testInt", testInt);
 }
 
 unittest(test_recall_int)
 {
-    OSFS::format();
-    int test_write = 123;
-    OSFS::newFile("testInt", test_write);
+	OSFS::format();
+	int test_write = 123;
+	OSFS::newFile("testInt", test_write);
 
-    uint16_t filePtr, fileSize;
-    auto r = OSFS::getFileInfo("testInt", filePtr, fileSize);
+	uint16_t filePtr, fileSize;
+	auto r = OSFS::getFileInfo("testInt", filePtr, fileSize);
 
-    assertEqual((int)OSFS::result::NO_ERROR, (int)r);
+	assertEqual((int)OSFS::result::NO_ERROR, (int)r);
 
-    int test_read;
+	int test_read;
 
-    r = OSFS::getFile("testInt", test_read);
-    assertEqual(test_write, test_read);
+	r = OSFS::getFile("testInt", test_read);
+	assertEqual(test_write, test_read);
+}
+
+unittest(test_wipe_worked)
+{
+	auto r = OSFS::format();
+
+	assertEqual(int(r), int(OSFS::result::UNFORMATTED));
+}
+
+unittest(test_overwrite)
+{
+	OSFS::format();
+	int testInt = 123;
+
+	OSFS::newFile("testInt", testInt);
+
+	auto r = OSFS::newFile("testInt", testInt);
+	assertEqual(int(r), int(OSFS::result::FILE_ALREADY_EXISTS));
+
+	int read;
+
+	testInt = 321;
+	OSFS::newFile("testInt", testInt, true);
+
+	int test_read;
+	r = OSFS::getFile("testInt", test_read);
+
+	assertEqual(int(r), int(OSFS::result::NO_ERROR));
+	assertEqual(testInt, test_read);
+}
+
+
+unittest(test_overwrite_size_change)
+{
+	OSFS::format();
+
+	struct obj {
+		char name[5];
+	}
+	struct obj_smaller {
+		char name[2];
+	}
+	struct obj_bigger {
+		char name[10];
+	}
+
+	int testInt = 123;
+
+	obj o_write;
+
+	OSFS::newFile("int1", testInt);
+	OSFS::newFile("test", o_write);
+	OSFS::newFile("int2", testInt);
+
+	obj o_read;
+
+	auto r = OSFS::getFile("test", o_read);
+	assertEqual(int(r), int(OSFS::result::NO_ERROR));
+
+	obj_smaller o_small;
+	obj_bigger o_big;
+
+	r = OSFS::newFile("test", obj_smaller, true);
+	assertEqual(int(r), int(OSFS::result::NO_ERROR));
+
+	r = OSFS::newFile("test", obj_bigger, true);
+	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 }
 
 
