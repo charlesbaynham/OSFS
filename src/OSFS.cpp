@@ -84,7 +84,7 @@ namespace OSFS {
 			return r;
 
 		// It is! Now get the first file header
-		int sizeRequired = sizeof(fileHeader) + size;
+		unsigned int sizeRequired = sizeof(fileHeader) + size;
 
 		// If we're overwriting an existing file, delete the existing file (if it
 		// exists)
@@ -93,7 +93,7 @@ namespace OSFS {
 		} else {
 			// If we're not, check if it already exists
 			uint16_t checkFilePointer, checkFileSize;
-			results r_check = getFileInfo(filename, checkFilePointer, checkFileSize)
+			result r_check = getFileInfo(filename, checkFilePointer, checkFileSize);
 
 			if (r_check != result::FILE_NOT_FOUND)
 				return result::FILE_ALREADY_EXISTS;
@@ -132,7 +132,7 @@ namespace OSFS {
 			// If this is a deleted file, see if we can fit our file here
 			if (isDeletedFile(workingHeader)) {
 				// It is. Is the space large enough for us?
-				int deletedSpace = workingHeader.nextFile - workingAddress;
+				unsigned int deletedSpace = workingHeader.nextFile - workingAddress;
 				if (deletedSpace >= sizeRequired) {
 					// Save the location for writing and quit the loop
 					writeAddress = workingAddress;
@@ -278,7 +278,7 @@ namespace OSFS {
 		if (address < startOfEEPROM || address > endOfEEPROM) return result::UNCAUGHT_OOR;
 		if (address + num < startOfEEPROM || address + num > endOfEEPROM) return result::UNCAUGHT_OOR;
 
-		writeNBytes(address, num, input);
+		writeNBytes(address, num, (byte*)input);
 
 		return result::NO_ERROR;
 	}
@@ -288,7 +288,7 @@ namespace OSFS {
 		if (address < startOfEEPROM || address > endOfEEPROM) return result::UNCAUGHT_OOR;
 		if (address + num < startOfEEPROM || address + num > endOfEEPROM) return result::UNCAUGHT_OOR;
 
-		readNBytes(address, num, output);
+		readNBytes(address, num, (byte*)output);
 
 		return result::NO_ERROR;
 	}
