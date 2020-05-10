@@ -233,7 +233,7 @@ namespace OSFS {
 	void padFilename(const char * filenameIn, char * filenameOut);
 
 	inline bool isDeletedFile(fileHeader workingHeader) {
-		return workingHeader.flags && 1<<DELBIT;
+		return workingHeader.flags & (1<<DELBIT);
 	}
 
 }
