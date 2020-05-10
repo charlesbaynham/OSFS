@@ -80,6 +80,34 @@ namespace OSFS {
 	#define OSFS_VER 2
 
 	/**
+	 * @brief      Write N bytes to the EEPROM
+	 *
+	 *             Uses the user-provided function writeNBytes to write to the ROM,
+	 *             first checking that we're staying within the limits
+	 *
+	 * @param[in]  address  The address
+	 * @param[in]  num      The number
+	 * @param      input    The input
+	 *
+	 * @return     Error status.
+	 */
+	result writeNBytesChk(uint16_t address, unsigned int num, const void* input);
+
+	/**
+	 * @brief      Reads N bytes from the EEPROM
+	 *
+	 *             Uses the user-provided function readNBytes to read from the ROM,
+	 *             first checking that we're staying within the limits
+	 *
+	 * @param[in]  address  The address
+	 * @param[in]  num      The number
+	 * @param      input    The output
+	 *
+	 * @return     Error status.
+	 */
+	result readNBytesChk(uint16_t address, unsigned int num, void* input);
+
+	/**
 	 * @brief      Gets a pointer to the given file
 	 *
 	 *             Looks for the file specified by filename. If found, stores a
@@ -209,34 +237,6 @@ namespace OSFS {
 		uint16_t dummy;
 		return checkLibVersion(dummy);
 	}
-
-	/**
-	 * @brief      Write N bytes to the EEPROM
-	 *
-	 *             Uses the user-provided function writeNBytes to write to the ROM,
-	 *             first checking that we're staying within the limits
-	 *
-	 * @param[in]  address  The address
-	 * @param[in]  num      The number
-	 * @param      input    The input
-	 *
-	 * @return     Error status.
-	 */
-	result writeNBytesChk(uint16_t address, unsigned int num, const void* input);
-
-	/**
-	 * @brief      Reads N bytes from the EEPROM
-	 *
-	 *             Uses the user-provided function readNBytes to read from the ROM,
-	 *             first checking that we're staying within the limits
-	 *
-	 * @param[in]  address  The address
-	 * @param[in]  num      The number
-	 * @param      input    The output
-	 *
-	 * @return     Error status.
-	 */
-	result readNBytesChk(uint16_t address, unsigned int num, void* input);
 
 	void padFilename(const char * filenameIn, char * filenameOut);
 
