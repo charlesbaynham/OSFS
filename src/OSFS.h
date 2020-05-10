@@ -184,8 +184,9 @@ namespace OSFS {
 	/**
 	 * @brief      Checks that the EEPROM is managed by this library
 	 *
-	 * @param[out] ver   The version of the library managing this EEPROM. 0 if
-	 *                   unformatted.
+	 * @param[out] ver   The version of the library managing this EEPROM. Returns UNFORMATTED if
+	 *                   unformatted or WRONG_VERSION if the filesystem is formatted but by an 
+	 *                   incompatible version of OSFS.
 	 *
 	 * @return     Error status
 	 */
