@@ -90,6 +90,10 @@ unittest(test_overwrite_size_change)
 
 	int testInt = 123;
 
+	uint16_t filePointer, fileSize;
+	uint16_t filePointer_smaller, fileSize_smaller;
+	uint16_t filePointer_bigger, fileSize_bigger;
+	
 	obj o_write;
 
 	OSFS::newFile("int1", testInt);
@@ -98,7 +102,11 @@ unittest(test_overwrite_size_change)
 
 	obj o_read;
 
-	auto r = OSFS::getFile("test", o_read);
+	auto r = getFileInfo("test", filePointer, fileSize);
+	assertEqual(int(r), int(OSFS::result::NO_ERROR));
+
+
+	r = OSFS::getFile("test", o_read);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 
 	obj_smaller o_small;
@@ -107,8 +115,23 @@ unittest(test_overwrite_size_change)
 	r = OSFS::newFile("test", obj_smaller, true);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
 
+	r = getFileInfo("test", filePointer_smaller, fileSize_smaller);
+	assertEqual(int(r), int(OSFS::result::NO_ERROR));
+
 	r = OSFS::newFile("test", obj_bigger, true);
 	assertEqual(int(r), int(OSFS::result::NO_ERROR));
+
+	r = getFileInfo("test", filePointer_bigger, fileSize_bigger);
+	assertEqual(int(r), int(OSFS::result::NO_ERROR));
+
+	assertEqual(fileSize, sizeof(obj));
+	assertEqual(fileSize_smaller, sizeof(obj_smaller));
+	assertEqual(fileSize_bigger, sizeof(obj_bigger));
+
+	assertEqual(filePointer, filePointer_smaller);
+	assertNotEqual(filePointer, filePointer_bigger);
+
+
 }
 
 
