@@ -4,11 +4,6 @@
 #include "RAM_storage.h"
 
 
-// Just for the tests, allow OFSF::result objects to be cast to ints
-operator int( OSFS::result &r ) {
-  return int(r);
-}
-
 // Unit tests for writing files
 
 unittest_setup() {
