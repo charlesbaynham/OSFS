@@ -96,7 +96,7 @@ void setup() {
 
   complexType testCplx;
   
-  OSFS::getFile("testCplx", testCplx);
+  r = OSFS::getFile("testCplx", testCplx);
 
   if (r == notfound)
   	Serial.println(F("Not found"));
