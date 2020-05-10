@@ -106,24 +106,13 @@ namespace OSFS {
 
 			// Quit if it has the same name and isn't deleted
 			if (!isDeletedFile(workingHeader) && 0 == strncmp(workingHeader.fileID, newHeader.fileID, 11)) {
-				// Error if overwrite == false
-				if (!overwrite)
-				{
+				// Error if different sizes or overwrite == false
+				if (size != workingHeader.fileSize || overwrite == false)
 					return result::FILE_ALREADY_EXISTS;
-				}
-				else if (size != workingHeader.fileSize)
-				{
-					//even though overwrite is true, this isn't the same filesize.  Therefore... delete it and keep going.
-					deleteFiledt(filename);
-				}
-				else
-				{
 
-					// Overwriting is possible: user asked for it, and the sizes are the same
-					writeAddress = workingAddress;
-					break;
-
-				}
+				// else overwrite it
+				writeAddress = workingAddress;
+				break;
 			}
 
 			// If there's no next file, calculate the start of the spare space and break the loop
