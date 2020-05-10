@@ -69,7 +69,7 @@ void setup() {
   Serial.println(F("Looking for testStr..."));
   
   char testStr[15];
-  unsigned int filePtr, fileSize;
+  uint16_t filePtr, fileSize;
   r = OSFS::getFileInfo("testStr", filePtr, fileSize);
 
   if (r == notfound)
