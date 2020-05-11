@@ -4,11 +4,20 @@ Overly Simplified File System (OSFS)
 Provides an extremely basic, low footprint file system for EEPROM access in
 an Arduino or other AVR microprocessor. Could be ported to other architectures very easily. 
 
+Note
+----
+
+The example provided will work on devices with AVR architectures and
+demonstrate how to use the build-in EEPROM for storage. However the library
+can work on almost any microprocessor as long as you write the `readNBytes`
+and `writeNBytes` functions to interface the library with your storage medium.
+
+
 Usage
 -----
 
-The user must define wrapper functions to read / write from the memory in use. 
-This means that OSFS can be used for arbitary storage media, including external 
+The user must define interface functions to read / write from the memory in use. 
+This means that OSFS can be used for arbitrary storage media, including external 
 hardware interfaced by e.g. SPI. 
 
 To use OSFS with the Arduino EEPROM, copy the function definitions from the examples 
@@ -102,4 +111,48 @@ Bytes 1 to 4 = "OSFS" Bytes 5 to 6 = uint16_t containing version info.
 Unless these 6 bytes match their expected values, this library will consider
 the EEPROM to be unformatted and will refuse to work with it until format() is called. 
 
-_Copyright Charles Baynham 2017_
+Interface functions
+-------------------
+
+For the library to work, you must teach it how to access your storage device;
+you do this by defining the functions `readNBytes` and `writeNBytes` and the
+`uint16_t`s `startOfEEPROM` and `endOfEEPROM`. Despite the names (kept for
+backwards compatibility), these can be used to access any type of storage
+medium, not just EEPROM. The example files show how this can be done for
+accessing the built-in EEPROM on an AVR device. The tests show how to point
+them at a chunk of RAM instead (slightly pointless in real life, since the
+contents would be lost on power-off). 
+
+To define your own interface, copy the following definitions into your code:
+
+```
+// Here we define the four pieces of information that OSFS needs to make a filesystem:
+// 
+// 1) and 2) How large is the storage medium?
+uint16_t OSFS::startOfEEPROM = 1;
+uint16_t OSFS::endOfEEPROM = 1024;
+
+// 3) How do I read from the medium?
+void OSFS::readNBytes(uint16_t address, unsigned int num, byte* output) {
+	... code that copies `num` bytes from your storage medium 
+	at `address` into the waiting array `output` ...
+}
+
+// 4) How to I write to the medium?
+void OSFS::writeNBytes(uint16_t address, unsigned int num, const byte* input) {
+	... code that copies `num` bytes from the array `input` 
+	into `address` on your storage medium ...
+}
+```
+
+You don't need to include checks for overflowing your memory bounds in `readNBytes` and `writeNBytes` since OSFS will check `address` and `num` against the `startOfEEPROM` and `endOfEEPROM` constants you provide. 
+
+Once these four components are defined, OSFS will now manage that chunk of
+your storage medium. Call `OSFS::format()` to get going and follow the
+examples for tips. Note that you don't have to provide OSFS with the whole
+thing: it's just as happy managing a small piece of your memory as it is
+managing all of it. 
+
+
+
+_Copyright Charles Baynham 2020_

@@ -2,6 +2,7 @@ compile:
   libraries: ~
   platforms:
     - uno
+    - mega2560
 
 unittest:
   libraries: ~
