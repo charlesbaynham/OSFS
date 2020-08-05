@@ -1,3 +1,6 @@
+[![Arduino library](https://www.ardu-badge.com/badge/OSFS.svg)](https://www.ardu-badge.com/OSFS)
+[![Build Status](https://travis-ci.org/charlesbaynham/OSFS.svg?branch=master)](https://travis-ci.org/charlesbaynham/OSFS)
+
 Overly Simplified File System (OSFS)
 ====================================
 
@@ -102,8 +105,8 @@ Each file has a header of n bytes:
 
 `Size of file` and `pointer to next` are both present because a file may not
 necessarily fill all the available space, e.g. if it has been overwritten
-with a smaller file. Overwriting with a larger file is not supported yet,
-since file fragmentation is not supported.
+with a smaller file. As of v1.2, overwriting with a larger file is supported if
+there is a sufficiently large continuous space available to place it in. 
 
 The first 4 bytes of EEPROM are reserved for information about this library:
 Bytes 1 to 4 = "OSFS" Bytes 5 to 6 = uint16_t containing version info.
