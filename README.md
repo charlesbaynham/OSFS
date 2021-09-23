@@ -89,6 +89,7 @@ Internals
 This library has no support for fragmented files or directories. File names
 are in 8.3 format: 8 chars followed by 3 for an extension. Filenames will be
 padded to 11 chars by spaces.
+You can change the filename size by modifying the fileName_length variable from 11 to the number of characters you need.
 
 Each file has a header of n bytes:
 
