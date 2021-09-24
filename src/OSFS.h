@@ -42,7 +42,7 @@
 #include <Arduino.h>
 
 namespace OSFS {
-	//File name lengths
+	// File name lengths
 	constexpr uint8_t fileName_length = 11;
 
 	// User provided details about the EEPROM
