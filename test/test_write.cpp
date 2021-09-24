@@ -93,7 +93,7 @@ unittest(test_overwrite_size_change)
 	uint16_t filePointer, fileSize;
 	uint16_t filePointer_smaller, fileSize_smaller;
 	uint16_t filePointer_bigger, fileSize_bigger;
-	
+
 	obj o_write;
 
 	OSFS::newFile("int1", testInt);
@@ -138,7 +138,7 @@ unittest_main()
 
 
 
-// // The rest is your program as normal. 
+// // The rest is your program as normal.
 // void setup() {
 
 //   Serial.begin(57600);

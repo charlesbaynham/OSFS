@@ -3,7 +3,7 @@
 
 // The arduino_ci mocking library does not cover EEPROM. But that's fine: I'll
 // just point OSFS at a location in RAM instead, and have it treat it create
-// its filesystem there. 
+// its filesystem there.
 
 uint16_t OSFS::startOfEEPROM = 0;
 uint16_t OSFS::endOfEEPROM = 1023;
