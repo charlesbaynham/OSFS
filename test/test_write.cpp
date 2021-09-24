@@ -20,11 +20,52 @@ unittest(test_format)
 	OSFS::format();
 }
 
+unittest(test_storage_header)
+{
+	OSFS::format();
+	assertEqual(storage[0], 'O');
+	assertEqual(storage[1], 'S');
+	assertEqual(storage[2], 'F');
+	assertEqual(storage[3], 'S');
+}
+
 unittest(test_write_int)
 {
 	OSFS::format();
 	int testInt = 123;
 	OSFS::newFile("testInt", testInt);
+}
+
+unittest(test_file_header)
+{
+	OSFS::format();
+	
+	int testInt = 123;
+	OSFS::newFile("testInt", testInt);
+	
+	// File name
+	assertEqual(storage[6],  't');
+	assertEqual(storage[7],  'e');
+	assertEqual(storage[8],  's');
+	assertEqual(storage[9],  't');
+	assertEqual(storage[10], 'I');
+	assertEqual(storage[11], 'n');
+	assertEqual(storage[12], 't');
+	assertEqual(storage[13], ' ');
+	assertEqual(storage[14], ' ');
+	assertEqual(storage[15], ' ');
+	assertEqual(storage[16], ' ');
+	
+	// File size
+	assertEqual(storage[17], 0);
+	assertEqual(storage[18], 2);
+	
+	// Pointer to next file
+	assertEqual(storage[19], 0);
+	assertEqual(storage[20], 0);
+	
+	// Flags
+	assertEqual(storage[21], 0);
 }
 
 unittest(test_recall_int)
