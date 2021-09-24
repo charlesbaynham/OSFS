@@ -24,7 +24,7 @@ namespace OSFS {
 		fileHeader workingHeader;
 		uint16_t workingAddress = startOfEEPROM + sizeof(FSInfo);
 
-		char paddedFilename[fileName_length];
+		char paddedFilename[FILE_NAME_LENGTH];
 		padFilename(filename, paddedFilename);
 
 		// Loop through checking the file header until 
@@ -42,7 +42,7 @@ namespace OSFS {
 
 			// Is this the right file?
 			// Check the file ID
-			if (0 == strncmp(workingHeader.fileID, paddedFilename, fileName_length)) {
+			if (0 == strncmp(workingHeader.fileID, paddedFilename, FILE_NAME_LENGTH)) {
 				// We found it!
 				// Is it marked as deleted?
 				if (isDeletedFile(workingHeader)) {
@@ -187,7 +187,7 @@ namespace OSFS {
 			return r;
 
 		// Store padded filename in filenamePadded
-		char filenamePadded[fileName_length];
+		char filenamePadded[FILE_NAME_LENGTH];
 		padFilename(filename, filenamePadded);
 
 		// Get the first header
@@ -208,7 +208,7 @@ namespace OSFS {
 				return r;
 
 			// Delete the file if it has the same name and isn't already deleted
-			if (!isDeletedFile(workingHeader) && 0 == strncmp(workingHeader.fileID, filenamePadded, fileName_length)) {
+			if (!isDeletedFile(workingHeader) && 0 == strncmp(workingHeader.fileID, filenamePadded, FILE_NAME_LENGTH)) {
 				
 				workingHeader.flags = workingHeader.flags | 1<<DELBIT;
 				r = writeNBytesChk(workingAddress, sizeof(fileHeader), &workingHeader);
@@ -300,9 +300,9 @@ namespace OSFS {
 
 
 	void padFilename(const char * filenameIn, char * filenameOut) {
-		// Pad filename to fileName_length chars
+		// Pad filename to FILE_NAME_LENGTH chars
 		bool ended = false;
-		for (int i = 0; i<fileName_length; i++) {
+		for (int i = 0; i<FILE_NAME_LENGTH; i++) {
 			
 			char inChar;
 			if (!ended)
