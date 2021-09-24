@@ -20,6 +20,13 @@ unittest(test_format)
 	OSFS::format();
 }
 
+unittest(test_write_int)
+{
+	OSFS::format();
+	int testInt = 123;
+	OSFS::newFile("testInt", testInt);
+}
+
 unittest(test_storage_header)
 {
 	OSFS::format();
@@ -27,13 +34,6 @@ unittest(test_storage_header)
 	assertEqual(storage[1], 'S');
 	assertEqual(storage[2], 'F');
 	assertEqual(storage[3], 'S');
-}
-
-unittest(test_write_int)
-{
-	OSFS::format();
-	int testInt = 123;
-	OSFS::newFile("testInt", testInt);
 }
 
 unittest(test_file_header)
@@ -44,8 +44,9 @@ unittest(test_file_header)
 	OSFS::newFile("testInt", testInt);
 	
 	for (int i=6; i<=21; i++) {
-		putchar(storage[i]);
+		printf("[%i],", (int)storage[i]);
 	}
+	putchar('\n')
 	
 	// File name
 	assertEqual(storage[6],  't');
