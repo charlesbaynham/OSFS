@@ -1,3 +1,4 @@
+
 repos:
   - repo: https://github.com/pocc/pre-commit-hooks
     rev: master
@@ -11,7 +12,7 @@ repos:
 #      - id: cpplint
 #      - id: include-what-you-use
 
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1  # Use the ref you want to point at
     hooks:
     -   id: trailing-whitespace
