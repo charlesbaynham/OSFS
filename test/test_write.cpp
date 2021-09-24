@@ -43,6 +43,10 @@ unittest(test_file_header)
 	int testInt = 123;
 	OSFS::newFile("testInt", testInt);
 	
+	for (int i=6; i<=21; i++) {
+		putchar(storage[i]);
+	}
+	
 	// File name
 	assertEqual(storage[6],  't');
 	assertEqual(storage[7],  'e');
