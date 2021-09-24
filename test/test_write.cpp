@@ -63,7 +63,7 @@ unittest(test_file_header)
 	
 	// File size
 	assertEqual(storage[17], 0);
-	assertEqual(storage[18], 2);
+	assertEqual(storage[18], sizeof(int));
 	
 	// Pointer to next file
 	assertEqual(storage[19], 0);
