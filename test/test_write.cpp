@@ -46,7 +46,7 @@ unittest(test_file_header)
 	for (int i=6; i<=21; i++) {
 		printf("[%i],", (int)storage[i]);
 	}
-	putchar('\n')
+	putchar('\n');
 	
 	// File name
 	assertEqual(storage[6],  't');
