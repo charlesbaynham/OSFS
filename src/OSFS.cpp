@@ -27,7 +27,7 @@ namespace OSFS {
 		char paddedFilename[FILE_NAME_LENGTH];
 		padFilename(filename, paddedFilename);
 
-		// Loop through checking the file header until 
+		// Loop through checking the file header until
 		// 	a) we reach a NULL pointer,
 		// 	b) we find a deleted file that can be overwritten
 		// 	c) we get an OOL pointer somehow
@@ -58,7 +58,7 @@ namespace OSFS {
 
 			// If there's no next file
 			if (workingHeader.nextFile == 0) {
-				
+
 				return result::FILE_NOT_FOUND;
 			}
 
@@ -73,7 +73,7 @@ namespace OSFS {
 
 		// Header for new file
 		fileHeader newHeader;
-		
+
 		// Store padded filename in newHeader
 		padFilename(filename, newHeader.fileID);
 
@@ -108,7 +108,7 @@ namespace OSFS {
 		uint16_t workingAddress = startOfEEPROM + sizeof(FSInfo);
 		uint16_t writeAddress;
 
-		// Loop through checking the file header until 
+		// Loop through checking the file header until
 		// 	a) we reach a NULL pointer (i.e. the end of the current files)
 		// 	b) we find a deleted file that can be overwritten
 		// 	c) we run out of space
@@ -121,11 +121,11 @@ namespace OSFS {
 			if (r != result::NO_ERROR)
 				return r;
 
-			
+
 			// If there's no next file, calculate the start of the spare space and break the loop
-			// Note that we might find a file header with fileSize == 0 if there are no files on 
-			// the filesystem at all. In this case, overwrite this "dummy header". 
-			if (workingHeader.nextFile == 0) {				
+			// Note that we might find a file header with fileSize == 0 if there are no files on
+			// the filesystem at all. In this case, overwrite this "dummy header".
+			if (workingHeader.nextFile == 0) {
 				if (workingHeader.fileSize != 0)
 					writeAddress = workingAddress + sizeof(workingHeader) + workingHeader.fileSize;
 				else
@@ -149,19 +149,19 @@ namespace OSFS {
 			workingAddress = workingHeader.nextFile;
 		}
 
-		// See if there's enough space in the EEPROM to fit our file in	
+		// See if there's enough space in the EEPROM to fit our file in
 		if (writeAddress + sizeRequired - 1 > endOfEEPROM)
 			return result::INSUFFICIENT_SPACE;
 
 		// We have a pointer to an address that has sufficient space to store our
-		// data, in writeAddress. 
-		// 
+		// data, in writeAddress.
+		//
 		// We have a pointer to the previous header in workingAddress
-		// 
+		//
 		// We have a copy of the previous header in workingHeader
 		//
 		// First, constuct a header for this file:
-		
+
 		newHeader.fileSize = size;
 		if (workingHeader.nextFile == 0)
 			newHeader.nextFile = 0;
@@ -179,7 +179,7 @@ namespace OSFS {
 	}
 
 	result deleteFile(const char * filename) {
-		
+
 		// Confirm that the EEPROM is managed by this version of OSFS
 		result r = checkLibVersion();
 
@@ -194,7 +194,7 @@ namespace OSFS {
 		fileHeader workingHeader;
 		uint16_t workingAddress = startOfEEPROM + sizeof(FSInfo);
 
-		// Loop through checking the file header until 
+		// Loop through checking the file header until
 		// 	a) we reach a NULL pointer,
 		// 	b) we find our file and it's not deleted
 		// 	c) we get an OOL pointer somehow
@@ -209,10 +209,9 @@ namespace OSFS {
 
 			// Delete the file if it has the same name and isn't already deleted
 			if (!isDeletedFile(workingHeader) && 0 == strncmp(workingHeader.fileID, filenamePadded, FILE_NAME_LENGTH)) {
-				
 				workingHeader.flags = workingHeader.flags | 1<<DELBIT;
 				r = writeNBytesChk(workingAddress, sizeof(fileHeader), &workingHeader);
-				
+
 				if (r != result::NO_ERROR)
 					return r;
 
@@ -289,7 +288,7 @@ namespace OSFS {
 	}
 
 	result readNBytesChk(uint16_t address, unsigned int num, void* output) {
-		
+
 		if (address < startOfEEPROM || address > endOfEEPROM) return result::UNCAUGHT_OOR;
 		if (address + num < startOfEEPROM || address + num > endOfEEPROM) return result::UNCAUGHT_OOR;
 
@@ -303,7 +302,6 @@ namespace OSFS {
 		// Pad filename to FILE_NAME_LENGTH chars
 		bool ended = false;
 		for (int i = 0; i<FILE_NAME_LENGTH; i++) {
-			
 			char inChar;
 			if (!ended)
 				inChar = *(filenameIn+i);

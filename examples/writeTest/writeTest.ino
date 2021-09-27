@@ -16,7 +16,7 @@
  */
 
 // Here we define the four pieces of information that OSFS needs to make a filesystem:
-// 
+//
 // 1) and 2) How large is the storage medium?
 uint16_t OSFS::startOfEEPROM = 1;
 uint16_t OSFS::endOfEEPROM = 1024;
@@ -38,7 +38,7 @@ void OSFS::writeNBytes(uint16_t address, unsigned int num, const byte* input) {
 }
 
 
-// The rest is your program as normal. 
+// The rest is your program as normal.
 void setup() {
 
   Serial.begin(57600);

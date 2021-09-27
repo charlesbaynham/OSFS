@@ -1,6 +1,6 @@
 /**
  * # Over Simplified File System (OSFS)
- * 
+ *
  * Provides an extremely basic, low footprint file system for EEPROM access in
  * an AVR microprocessor or otherwise.
  *
@@ -9,7 +9,7 @@
  * This library has no support for fragmented files or directories. File names
  * are in 8.3 format: 8 chars followed by 3 for an extension. Filenames will be
  * padded to 8 chars by spaces.
- * 
+ *
  * Each file has a header of n bytes:
  *
  * -----------------------
@@ -22,7 +22,7 @@
  * FILE CONTENTS
  * 	Binary data with no restrictions (<Size of file> bytes)
  * -----------------------
- * 
+ *
  * <Size of file> and <pointer to next> are both present because a file may not
  * necessarily fill all the available space, e.g. if it has been overwritten
  * with a smaller file. Overwriting with a larger file is not supported yet,
@@ -34,7 +34,7 @@
  * Bytes 1 to 4 = "OSFS" Bytes 5 to 6 = uint16_t containing version info.
  *
  * Unless these 6 bytes match their expected values, this library will consider
- * the EEPROM to be unformatted and will refuse to work with it until format() is called. 
+ * the EEPROM to be unformatted and will refuse to work with it until format() is called.
  */
 
 #pragma once
@@ -145,7 +145,7 @@ namespace OSFS {
 		if (r != result::NO_ERROR)
 			return r;
 
-		if (size != sizeof(buf)) 
+		if (size != sizeof(buf))
 			return result::BUFFER_WRONG_SIZE;
 
 		return readNBytesChk(add, size, &buf);
@@ -164,10 +164,10 @@ namespace OSFS {
 	 *                       be ignored, less chars will be padded to 11.
 	 * @param      data      Pointer to the data to be stored.
 	 * @param      size      Number of bytes to store, starting at `data`.
-	 * @param      overwrite Overwrite the named file is it is present. Note that 
+	 * @param      overwrite Overwrite the named file is it is present. Note that
 	                         if you attempt to overwrite an existing file with a larger one
 	                         but there is insufficient space, the original file will still
-	                         be deleted. 
+	                         be deleted.
 	 *
 	 * @return     Error status.
 	 */
@@ -183,10 +183,10 @@ namespace OSFS {
 	 * @param      filename  The filename. Should be 11 chars long. More chars will
 	 *                       be ignored, less chars will be padded to 11.
 	 * @param[in]  buf       The variable to be stored
-	 * @param      overwrite Overwrite the named file is it is present. Note that 
+	 * @param      overwrite Overwrite the named file is it is present. Note that
 	                         if you attempt to overwrite an existing file with a larger one
 	                         but there is insufficient space, the original file will still
-	                         be deleted. 
+	                         be deleted.
 	 *
 	 * @tparam     T         Type to be stored (autodetected)
 	 *
@@ -215,7 +215,7 @@ namespace OSFS {
 	 *             library. This does not actually erase the EEPROM, only writes to
 	 *             the FSInfo header and the first file block.
 	 *
-	 * @return     Error status. 
+	 * @return     Error status.
 	 */
 	result format();
 
@@ -223,7 +223,7 @@ namespace OSFS {
 	 * @brief      Checks that the EEPROM is managed by this library
 	 *
 	 * @param[out] ver   The version of the library managing this EEPROM. Returns UNFORMATTED if
-	 *                   unformatted or WRONG_VERSION if the filesystem is formatted but by an 
+	 *                   unformatted or WRONG_VERSION if the filesystem is formatted but by an
 	 *                   incompatible version of OSFS.
 	 *
 	 * @return     Error status

@@ -50,7 +50,7 @@ void setup() {
   ////////////////////////////
 
   Serial.println(F("Looking for testInt..."));
-  
+
   int testInt;
   r = OSFS::getFile("testInt", testInt);
 
@@ -67,7 +67,7 @@ void setup() {
   ////////////////////////////
 
   Serial.println(F("Looking for testStr..."));
-  
+
   char testStr[15];
   uint16_t filePtr, fileSize;
   r = OSFS::getFileInfo("testStr", filePtr, fileSize);
@@ -95,7 +95,7 @@ void setup() {
   };
 
   complexType testCplx;
-  
+
   r = OSFS::getFile("testCplx", testCplx);
 
   if (r == notfound)
