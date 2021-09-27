@@ -43,7 +43,7 @@
 
 namespace OSFS {
 	// File name lengths
-	constexpr size_t FILE_NAME_LENGTH = 25;
+	constexpr size_t FILE_NAME_LENGTH = 11;
 
 	// User provided details about the EEPROM
 	extern uint16_t startOfEEPROM;
