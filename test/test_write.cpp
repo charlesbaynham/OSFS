@@ -39,15 +39,15 @@ unittest(test_storage_header)
 unittest(test_file_header)
 {
 	OSFS::format();
-	
+
 	int testInt = 123;
 	OSFS::newFile("testInt", testInt);
-	
+
 	for (int i=6; i<=21; i++) {
 		printf("[%i],", (int)storage[i]);
 	}
 	putchar('\n');
-	
+
 	// File name
 	assertEqual(storage[6],  't');
 	assertEqual(storage[7],  'e');
@@ -60,15 +60,15 @@ unittest(test_file_header)
 	assertEqual(storage[14], ' ');
 	assertEqual(storage[15], ' ');
 	assertEqual(storage[16], ' ');
-	
+
 	// File size
 	assertEqual(storage[17], 0);
 	assertEqual(storage[18], sizeof(int));
-	
+
 	// Pointer to next file
 	assertEqual(storage[19], 0);
 	assertEqual(storage[20], 0);
-	
+
 	// Flags
 	assertEqual(storage[21], 0);
 }
