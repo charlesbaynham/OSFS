@@ -42,6 +42,8 @@
 #include <Arduino.h>
 
 namespace OSFS {
+	// File name lengths
+	constexpr size_t FILE_NAME_LENGTH = 11;
 
 	// User provided details about the EEPROM
 	extern uint16_t startOfEEPROM;
@@ -50,7 +52,7 @@ namespace OSFS {
 	extern void writeNBytes(uint16_t address, unsigned int num, const byte* input);
 
 	struct fileHeader {
-		char fileID[11]; // Note that this string is not null terminated
+		char fileID[FILE_NAME_LENGTH]; // Note that this string is not null terminated
 		uint16_t fileSize;
 		uint16_t nextFile; // = 0 if no next file
 		uint8_t flags; // MSB = 1 for deleted file, 0 for valid. Other bits reserved
