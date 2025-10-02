@@ -69,7 +69,7 @@ namespace OSFS {
 		return result::UNDEFINED_ERROR;
 	}
 
-	result newFile(const char* filename, void* data, unsigned int size, bool overwrite) {
+	result newFile(const char* filename, const void* data, unsigned int size, bool overwrite) {
 
 		// Header for new file
 		fileHeader newHeader;

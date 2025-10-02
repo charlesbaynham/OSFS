@@ -171,7 +171,7 @@ namespace OSFS {
 	 *
 	 * @return     Error status.
 	 */
-	result newFile(const char* filename, void* data, unsigned int size, bool overwrite = false);
+	result newFile(const char* filename, const void* data, unsigned int size, bool overwrite = false);
 
 	/**
 	 * @brief      Store a new file
@@ -193,7 +193,7 @@ namespace OSFS {
 	 * @return     Error status.
 	 */
 	template <typename T>
-	inline result newFile(const char* filename, T& buf, bool overwrite = false) {
+	inline result newFile(const char* filename, const T& buf, bool overwrite = false) {
 		return newFile(filename, &buf, sizeof(buf), overwrite);
 	}
 
